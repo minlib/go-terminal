@@ -6,12 +6,19 @@ import (
 )
 
 func TestZip(t *testing.T) {
-	//err := Zip("C:\\Users\\Admin\\Desktop\\bean.tar.gz", "C:\\Users\\Admin\\Desktop\\bean", "C:\\Users\\Admin\\Desktop\\json.txt")
-	err := Zip("C:\\Users\\Admin\\Desktop\\bean444.tar.gz", "C:\\Users\\Admin\\Desktop\\json.txt")
-	fmt.Println("err is", err)
+	err := Zip("C:\\Users\\Administrator\\Desktop\\bean.zip", "C:\\Users\\Administrator\\Desktop\\json.txt")
+	if err == nil {
+		fmt.Println("压缩成功")
+	} else {
+		fmt.Println("压缩失败，", err)
+	}
 }
 
 func TestUnzip(t *testing.T) {
-	err := Unzip("C:\\Users\\Admin\\Desktop\\bean.tar.gz", "C:\\Users\\Admin\\Desktop\\bean3")
-	fmt.Println("err is", err)
+	err := Unzip("C:\\Users\\Administrator\\Desktop\\bean.zip", "C:\\Users\\Administrator\\Desktop\\bean")
+	if err == nil {
+		fmt.Println("解压成功")
+	} else {
+		fmt.Println("解压失败，", err)
+	}
 }
