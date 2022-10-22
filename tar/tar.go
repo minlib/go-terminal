@@ -13,27 +13,27 @@ import (
 // Tar compresses the specified files or dirs to tar.gz archive.
 func Tar(tarPath string, paths ...string) error {
 	// file write
-	fw, err := os.Create(tarPath)
+	file, err := os.Create(tarPath)
 	if err != nil {
 		panic(err)
 	}
-	defer fw.Close()
+	defer file.Close()
 	// gzip write
-	gw := gzip.NewWriter(fw)
-	defer gw.Close()
+	gzipWriter := gzip.NewWriter(file)
+	defer gzipWriter.Close()
 	// tar write
-	tw := tar.NewWriter(gw)
-	defer tw.Close()
+	tarWrite := tar.NewWriter(gzipWriter)
+	defer tarWrite.Close()
 	// traverse the file or directory
 	for _, srcPath := range paths {
 		// remove the trailing path separator if path is a directory
 		srcPath = strings.TrimSuffix(srcPath, string(os.PathSeparator))
 		// visit all the files or directories in the tree
-		err = filepath.Walk(srcPath, func(path string, fi fs.FileInfo, err error) error {
+		err = filepath.Walk(srcPath, func(path string, fileInfo fs.FileInfo, err error) error {
 			if err != nil {
 				return err
 			}
-			if fi.IsDir() {
+			if fileInfo.IsDir() {
 				return nil
 			}
 			name, err := filepath.Rel(filepath.Dir(srcPath), path)
@@ -41,16 +41,13 @@ func Tar(tarPath string, paths ...string) error {
 				return err
 			}
 			name = strings.ReplaceAll(name, string(os.PathSeparator), "/")
-			// fmt.Println(name)
-			// 信息头
-			th := new(tar.Header)
-			th.Name = name
-			th.Format = tar.FormatGNU
-			th.Size = fi.Size()
-			th.Mode = int64(fi.Mode())
-			th.ModTime = fi.ModTime()
-			err = tw.WriteHeader(th)
-			if err != nil {
+			header := new(tar.Header)
+			header.Name = name
+			header.Format = tar.FormatGNU
+			header.Size = fileInfo.Size()
+			header.Mode = int64(fileInfo.Mode())
+			header.ModTime = fileInfo.ModTime()
+			if err = tarWrite.WriteHeader(header); err != nil {
 				panic(err)
 			}
 			f, err := os.Open(path)
@@ -58,9 +55,7 @@ func Tar(tarPath string, paths ...string) error {
 				return err
 			}
 			defer f.Close()
-			// 写文件
-			_, err = io.Copy(tw, f)
-			if err != nil {
+			if _, err = io.Copy(tarWrite, f); err != nil {
 				panic(err)
 			}
 			return err
@@ -72,8 +67,8 @@ func Tar(tarPath string, paths ...string) error {
 	return nil
 }
 
-// UnTar decompresses a tar.gz file to specified directory.
-func UnTar(tarFile, destDir string) error {
+// Untar decompresses a tar.gz file to specified directory.
+func Untar(tarFile, destDir string) error {
 	if !strings.HasSuffix(destDir, string(os.PathSeparator)) {
 		destDir += string(os.PathSeparator)
 	}
@@ -82,14 +77,14 @@ func UnTar(tarFile, destDir string) error {
 		return err
 	}
 	defer srcFile.Close()
-	gr, err := gzip.NewReader(srcFile)
+	gzipReader, err := gzip.NewReader(srcFile)
 	if err != nil {
 		return err
 	}
-	defer gr.Close()
-	tr := tar.NewReader(gr)
+	defer gzipReader.Close()
+	tarReader := tar.NewReader(gzipReader)
 	for {
-		hdr, err := tr.Next()
+		header, err := tarReader.Next()
 		if err != nil {
 			if err == io.EOF {
 				break
@@ -97,7 +92,7 @@ func UnTar(tarFile, destDir string) error {
 				return err
 			}
 		}
-		filename := destDir + hdr.Name
+		filename := destDir + header.Name
 		if err := os.MkdirAll(filepath.Dir(filename), os.ModePerm); err != nil {
 			return err
 		}
@@ -105,7 +100,7 @@ func UnTar(tarFile, destDir string) error {
 		if err != nil {
 			return err
 		}
-		io.Copy(file, tr)
+		io.Copy(file, tarReader)
 	}
 	return nil
 }
