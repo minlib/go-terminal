@@ -1,19 +1,15 @@
 package cmd
 
 import (
-	"fmt"
 	"os/exec"
-
-	"github.com/minlib/go-terminal/charset"
+	"strconv"
 )
 
-func WinCmd(cmd string) (string, error) {
-	c := exec.Command("cmd", "/c", cmd)
-	outputByte, err := c.CombinedOutput()
-	if err != nil {
-		fmt.Println("err:", err)
-		return "", err
-	}
-	output := charset.BytesToString(outputByte, charset.GB18030)
-	return output, nil
+func Cmd(name string, arg ...string) error {
+	cmd := exec.Command(name, arg...)
+	return cmd.Run()
+}
+
+func Kill(pid int) error {
+	return Cmd("kill", "-1", strconv.Itoa(pid))
 }

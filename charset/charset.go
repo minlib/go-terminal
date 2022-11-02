@@ -12,22 +12,18 @@ const (
 	UTF8    = Charset("UTF-8")
 )
 
-// BytesToString 二进制数组转指定字符编码的字符串
-// @byte 字节流
-// @charset 字符编码
-func BytesToString(byte []byte, charset Charset) string {
-	var str string
+// BytesToString 二进制数组转成指定字符编码的字符串
+func BytesToString(b []byte, charset Charset) string {
+	var buf []byte
 	switch charset {
 	case GB18030:
-		var decodeBytes, _ = simplifiedchinese.GB18030.NewDecoder().Bytes(byte)
-		str = string(decodeBytes)
+		buf, _ = simplifiedchinese.GB18030.NewDecoder().Bytes(b)
 	case GBK:
-		var decodeBytes, _ = simplifiedchinese.GBK.NewDecoder().Bytes(byte)
-		str = string(decodeBytes)
+		buf, _ = simplifiedchinese.GBK.NewDecoder().Bytes(b)
 	case UTF8:
 		fallthrough
 	default:
-		str = string(byte)
+		buf = b
 	}
-	return str
+	return string(buf)
 }

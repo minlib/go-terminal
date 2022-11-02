@@ -2,12 +2,17 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"testing"
 )
 
-func TestWinCmd(t *testing.T) {
-	s, err := WinCmd("tasklist")
-	fmt.Println(s, err)
-	//WinCmd("ipconfig")
-	//WinCmd("dir")
+func TestCmd(t *testing.T) {
+
+}
+
+func TestKill(t *testing.T) {
+	pid := os.Getpid()
+	err := Kill(pid)
+	fmt.Println("pid:", pid)
+	fmt.Println(err)
 }
