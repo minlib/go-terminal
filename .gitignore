@@ -1,0 +1,6 @@
+.git/
+.svn/
+.idea/
+target/
+test/
+*.iml
