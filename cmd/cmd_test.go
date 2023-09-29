@@ -7,12 +7,21 @@ import (
 )
 
 func TestCmd(t *testing.T) {
-
+	s, err := Cmd("tasklist")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(s)
 }
 
 func TestKill(t *testing.T) {
 	pid := os.Getpid()
-	err := Kill(pid)
-	fmt.Println("pid:", pid)
-	fmt.Println(err)
+	cmdStr := Kill(pid)
+	s, err := Cmd(cmdStr)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(s)
 }
