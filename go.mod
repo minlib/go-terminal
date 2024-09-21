@@ -1,6 +1,6 @@
 module github.com/minlib/go-terminal
 
-go 1.22.1
+go 1.23.1
 
 require (
 	github.com/pkg/sftp v1.13.6
