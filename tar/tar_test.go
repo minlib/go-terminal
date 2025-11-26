@@ -14,8 +14,8 @@ func TestTar(t *testing.T) {
 	}
 }
 
-func TestUntar(t *testing.T) {
-	err := Untar("D:\\temp\\bean.tar.gz", "D:\\temp\\bean_tar")
+func TestUnTar(t *testing.T) {
+	err := UnTar("D:\\temp\\bean.tar.gz", "D:\\temp\\bean_tar")
 	if err == nil {
 		fmt.Println("Untar successful.")
 	} else {

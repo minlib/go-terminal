@@ -67,8 +67,8 @@ func Tar(tarPath string, paths ...string) error {
 	return nil
 }
 
-// Untar decompresses a tar.gz file to specified directory.
-func Untar(tarFile, destDir string) error {
+// UnTar decompresses a tar.gz file to specified directory.
+func UnTar(tarFile, destDir string) error {
 	if !strings.HasSuffix(destDir, string(os.PathSeparator)) {
 		destDir += string(os.PathSeparator)
 	}

@@ -14,16 +14,16 @@ const (
 
 // BytesToString 二进制数组转成指定字符编码的字符串
 func BytesToString(b []byte, charset Charset) string {
-	var buf []byte
+	var bytes []byte
 	switch charset {
 	case GB18030:
-		buf, _ = simplifiedchinese.GB18030.NewDecoder().Bytes(b)
+		bytes, _ = simplifiedchinese.GB18030.NewDecoder().Bytes(b)
 	case GBK:
-		buf, _ = simplifiedchinese.GBK.NewDecoder().Bytes(b)
+		bytes, _ = simplifiedchinese.GBK.NewDecoder().Bytes(b)
 	case UTF8:
 		fallthrough
 	default:
-		buf = b
+		bytes = b
 	}
-	return string(buf)
+	return string(bytes)
 }
